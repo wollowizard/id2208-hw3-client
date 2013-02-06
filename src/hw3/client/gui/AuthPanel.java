@@ -4,15 +4,9 @@
  */
 package hw3.client.gui;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import hw3.client.Controller;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 
 /**
  *
@@ -116,7 +110,11 @@ public class AuthPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_userTextFieldActionPerformed
 
     private void authButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_authButtonActionPerformed
-  
+        try {
+            Controller.getInstance().authenticate(userTextField.getText(), pwdTextField.getText());
+        } catch (Exception ex) {
+            this.errorLabel.setText("Authentication not possible");
+        }
 
     }//GEN-LAST:event_authButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
