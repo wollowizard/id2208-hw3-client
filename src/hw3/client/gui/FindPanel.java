@@ -4,17 +4,26 @@
  */
 package hw3.client.gui;
 
+import hw3.client.Controller;
+import hw3.client.gui.serverclasses.MyFlight;
+import hw3.client.gui.serverclasses.Route;
+
 /**
  *
  * @author Gerard
  */
 public class FindPanel extends javax.swing.JPanel {
 
+    private final MainFrame frame;
+    private String txt = "";
+
     /**
      * Creates new form FindPanel
      */
-    public FindPanel() {
+    FindPanel(MainFrame frame) {
         initComponents();
+        this.frame = frame;
+        this.bookButton.setEnabled(false);
     }
 
     /**
@@ -34,9 +43,9 @@ public class FindPanel extends javax.swing.JPanel {
         toTextField = new javax.swing.JTextField();
         dateTextField = new javax.swing.JTextField();
         searchButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        flightsList = new javax.swing.JList();
         bookButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        flightTextArea = new javax.swing.JTextArea();
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -57,9 +66,21 @@ public class FindPanel extends javax.swing.JPanel {
             }
         });
 
-        jScrollPane1.setViewportView(flightsList);
-
         bookButton.setText("Book");
+        bookButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bookButtonMouseClicked(evt);
+            }
+        });
+        bookButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bookButtonActionPerformed(evt);
+            }
+        });
+
+        flightTextArea.setColumns(20);
+        flightTextArea.setRows(5);
+        jScrollPane2.setViewportView(flightTextArea);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -68,7 +89,11 @@ public class FindPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(bookButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -85,11 +110,7 @@ public class FindPanel extends javax.swing.JPanel {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(fromTextField)
                                     .addComponent(toTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bookButton)))
+                        .addGap(0, 119, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -111,28 +132,69 @@ public class FindPanel extends javax.swing.JPanel {
                         .addComponent(dateTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel4))
                     .addComponent(searchButton))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bookButton)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
         // TODO add your handling code here:
+
+        bookButton.setEnabled(false);
+        flightTextArea.setText("");
+        try {
+            Route r = Controller.getInstance().findByItinerary(fromTextField.getText(), toTextField.getText(), dateTextField.getText());
+            Double sum = 0.0;
+            boolean empty = true;
+            for (MyFlight f : r.flights) {
+                bookButton.setEnabled(true);
+
+                txt += "Id: " + f.getId() + "\n";
+                txt += "From: " + f.getFromAirport() + "\n";
+                txt += "To: " + f.getToAirport() + "\n";
+                txt += "Date: " + f.getFlightDate() + "\n";
+                txt += "Free places: " + f.getFreePlaces() + "\n";
+                Double price = f.getPrice();
+                sum += price;
+                txt += "Price: " + price + "\n";
+            }
+            if (r.flights.size() > 1) {
+                txt += "Total price: " + sum;
+            }
+            flightTextArea.setText(txt);
+
+
+
+
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void bookButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookButtonActionPerformed
+ 	frame.setContentPane(new PayPanel(frame, txt));
+        frame.pack();
+        frame.validate();
+
+    }//GEN-LAST:event_bookButtonActionPerformed
+
+    private void bookButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bookButtonMouseClicked
+
+       
+
+    }//GEN-LAST:event_bookButtonMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bookButton;
     private javax.swing.JTextField dateTextField;
-    private javax.swing.JList flightsList;
+    private javax.swing.JTextArea flightTextArea;
     private javax.swing.JTextField fromTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField toTextField;
     // End of variables declaration//GEN-END:variables

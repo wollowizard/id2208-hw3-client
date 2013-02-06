@@ -15,7 +15,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private MainFrame() {
         initComponents();
-        this.setContentPane(new AuthPanel());
+        this.setContentPane(new AuthPanel(this));
         this.validate();
 
     }

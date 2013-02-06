@@ -4,17 +4,28 @@
  */
 package hw3.client.gui;
 
+import hw3.client.Controller;
+import hw3.client.gui.serverclasses.Ticket;
+
 /**
  *
  * @author Gerard
  */
 public class PayPanel extends javax.swing.JPanel {
 
+    private final MainFrame frame;
+
     /**
      * Creates new form PayPanel
      */
-    public PayPanel() {
+    PayPanel(MainFrame frame, String txt) {
         initComponents();
+        this.frame = frame;
+        this.flightTextArea.setText(txt);
+        this.yourTicketLabel.setVisible(false);
+        this.ticketTextArea.setVisible(false);
+
+
     }
 
     /**
@@ -93,8 +104,8 @@ public class PayPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(creditCardTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -108,9 +119,22 @@ public class PayPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void payButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_payButtonActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_payButtonActionPerformed
 
+        try {
+            Ticket t = Controller.getInstance().pay(this.creditCardTextField.getText());
+            yourTicketLabel.setVisible(true);
+            ticketTextArea.setVisible(true);
+            String str="Ticket paid with credit card number " + t.creditCardNumber+"\n";
+            str+="Total price of ticket: " + t.totalPrice;
+            ticketTextArea.setText(str);
+            payButton.setEnabled(false);
+            
+        } catch (Exception e) {
+            
+        }
+
+
+    }//GEN-LAST:event_payButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField creditCardTextField;
     private javax.swing.JTextArea flightTextArea;

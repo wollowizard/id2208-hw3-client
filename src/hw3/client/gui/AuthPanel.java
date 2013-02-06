@@ -13,12 +13,15 @@ import java.util.logging.Logger;
  * @author alfredo
  */
 public class AuthPanel extends javax.swing.JPanel {
+    private final MainFrame frame;
 
     /**
      * Creates new form AuthPanel
      */
-    public AuthPanel() {
+    public AuthPanel(MainFrame m) {
         initComponents();
+        this.frame=m;
+        
     }
 
     /**
@@ -112,9 +115,13 @@ public class AuthPanel extends javax.swing.JPanel {
     private void authButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_authButtonActionPerformed
         try {
             Controller.getInstance().authenticate(userTextField.getText(), pwdTextField.getText());
+            frame.setContentPane(new FindPanel(frame));
         } catch (Exception ex) {
             this.errorLabel.setText("Authentication not possible");
+            
         }
+        frame.pack();
+        frame.validate();
 
     }//GEN-LAST:event_authButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
